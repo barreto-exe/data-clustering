@@ -3,20 +3,9 @@ using Microsoft.Win32;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Media.Media3D;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace data_filling
 {
@@ -153,7 +142,7 @@ namespace data_filling
                 if (gonnaDoIt)
                 {
                     int randomIndex = random.Next(0, dataArray.Length);
-                    if(random.Next(1,3) == 1)
+                    if (random.Next(1, 3) == 1)
                     {
                         dataArray[randomIndex] = dataArray[randomIndex].ToString().ToUpper()[0];
                     }
@@ -182,7 +171,7 @@ namespace data_filling
 
         private async void BtnCrear100_Click(object sender, RoutedEventArgs e)
         {
-            for(int i = 0; i < 30; i++)
+            for (int i = 0; i < 30; i++)
             {
                 await FillRandomAnswers();
                 await InsertPollRow();

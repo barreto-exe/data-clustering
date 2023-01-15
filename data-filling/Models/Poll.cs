@@ -1,11 +1,8 @@
 ﻿using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Reflection.PortableExecutable;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace data_filling.Models
 {
@@ -35,7 +32,7 @@ namespace data_filling.Models
             string query;
             int idEncuesta;
             using SqliteConnection conn = new($"Data Source={dbPath};");
-            
+
             await conn.OpenAsync();
 
             //Insert main row for Poll
@@ -44,8 +41,8 @@ namespace data_filling.Models
                 "VALUES((SELECT MAX(num_encuesta) FROM Encuesta)+1,'{0}', '{1}');" +
                 "SELECT MAX(num_encuesta) " +
                 "FROM Encuesta";
-            query = string.Format(query, 
-                DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"), 
+            query = string.Format(query,
+                DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"),
                 DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"));
             using (var command = new SqliteCommand(query, conn))
             {
