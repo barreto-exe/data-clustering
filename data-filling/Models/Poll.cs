@@ -8,23 +8,23 @@ namespace data_filling.Models
 {
     public class Poll
     {
-        public int Sexo { get; set; }
-        public int Semestre { get; set; }
-        public int Carrera { get; set; }
-        public int ConoceEIU { get; set; }
-        public int ActividadEIU { get; set; }
-        public IEnumerable<string> Cualidades { get; set; }
-        public IEnumerable<string> Postulados { get; set; }
+        public int Sex { get; set; }
+        public int Semester { get; set; }
+        public int Career { get; set; }
+        public int KnowsProgram { get; set; }
+        public int ActivitiesProgram { get; set; }
+        public IEnumerable<string> Values { get; set; }
+        public IEnumerable<string> Postulates { get; set; }
 
-        public Poll(int sexo, int semestre, int carrera, int conoceEIU, int actividadEIU, IEnumerable<string> cualidades, IEnumerable<string> postulados)
+        public Poll(int sex, int semester, int career, int knowsProgram, int activitiesProgram, IEnumerable<string> Values, IEnumerable<string> postulates)
         {
-            Sexo = sexo;
-            Semestre = semestre;
-            Carrera = carrera;
-            ConoceEIU = conoceEIU;
-            ActividadEIU = actividadEIU;
-            Cualidades = cualidades;
-            Postulados = postulados;
+            Sex = sex;
+            Semester = semester;
+            Career = career;
+            KnowsProgram = knowsProgram;
+            ActivitiesProgram = activitiesProgram;
+            this.Values = Values;
+            Postulates = postulates;
         }
 
         public async Task InsertDbRow(string dbPath)
@@ -55,16 +55,16 @@ namespace data_filling.Models
                 await reader.CloseAsync();
             }
 
-            var cualidades = Cualidades.ToArray();
-            var postulados = Postulados.ToArray();
+            var cualidades = Values.ToArray();
+            var postulados = Postulates.ToArray();
 
             //Insert answers
             query =
-                $"INSERT INTO Respuesta VALUES({idEncuesta}, 1, {Sexo}, NULL);" +
-                $"INSERT INTO Respuesta VALUES({idEncuesta}, 2, {Semestre}, NULL);" +
-                $"INSERT INTO Respuesta VALUES({idEncuesta}, 3, {Carrera}, NULL);" +
-                $"INSERT INTO Respuesta VALUES({idEncuesta}, 4, {ConoceEIU}, NULL);" +
-                $"INSERT INTO Respuesta VALUES({idEncuesta}, 5, {ActividadEIU}, NULL);" +
+                $"INSERT INTO Respuesta VALUES({idEncuesta}, 1, {Sex}, NULL);" +
+                $"INSERT INTO Respuesta VALUES({idEncuesta}, 2, {Semester}, NULL);" +
+                $"INSERT INTO Respuesta VALUES({idEncuesta}, 3, {Career}, NULL);" +
+                $"INSERT INTO Respuesta VALUES({idEncuesta}, 4, {KnowsProgram}, NULL);" +
+                $"INSERT INTO Respuesta VALUES({idEncuesta}, 5, {ActivitiesProgram}, NULL);" +
 
                 $"INSERT INTO Respuesta VALUES({idEncuesta}, 6, 1, '{cualidades[0]}');" +
                 $"INSERT INTO Respuesta VALUES({idEncuesta}, 6, 2, '{cualidades[1]}');" +

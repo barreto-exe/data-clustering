@@ -164,7 +164,7 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
                 Click="BtnCrear100_Click"
-                Content="Crear 100" />
+                Content="Crear muchos" />
 
             <Button
                 x:Name="BtnRandom"
