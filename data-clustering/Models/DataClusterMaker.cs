@@ -1,16 +1,11 @@
-﻿using DataClustering.Models;
+﻿using DataClustering.Utils;
 using Microsoft.Data.Sqlite;
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Collections.Generic;
-using DataClustering;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System;
-using DataClustering.Utils;
-using System.Reflection.Emit;
-using System.Reflection.PortableExecutable;
-using System.DirectoryServices.ActiveDirectory;
 
 namespace DataClustering.Models
 {
@@ -26,6 +21,67 @@ namespace DataClustering.Models
             DbPath = dbPath;
         }
 
+        public async Task FillAnswerList()
+        {
+            string query;
+            SqliteConnection conn = new($"Data Source={DbPath};");
+
+            await conn.OpenAsync();
+
+            List<Answer> answerList = new();
+
+            query =
+                "SELECT " +
+                    "r.num_encuesta, r.num_pregunta, p.titulo as tit_preg, " +
+                    "r.num_opcion as num_resp, o.titulo as tit_resp, r.respuesta as texto_resp\n" +
+                "FROM Respuesta r\n" +
+                "INNER JOIN Pregunta p ON r.num_pregunta = p.num_pregunta\n" +
+                "INNER JOIN Opcion o ON r.num_opcion = o.num_opcion AND r.num_pregunta = o.num_pregunta\n" +
+                "ORDER BY r.num_encuesta, r.num_pregunta, r.num_opcion";
+            using (var command = new SqliteCommand(query, conn))
+            {
+                var reader = command.ExecuteReader();
+
+                while (await reader.ReadAsync())
+                {
+                    Answer answer = new()
+                    {
+                        PollNumber = reader.GetInt32("num_encuesta"),
+                        AnswerNumber = reader.GetInt32("num_resp"),
+                        AnswerTitle = reader.GetString("tit_resp"),
+                        QuestionNumber = reader.GetInt32("num_pregunta"),
+                        QuestionTitle = reader.GetString("tit_preg"),
+                        AnswerText = reader.IsDBNull("texto_resp") ? null : reader.GetString("texto_resp"),
+                    };
+
+                    answerList.Add(answer);
+                }
+
+                await reader.CloseAsync();
+            }
+
+            Answers = answerList;
+        }
+
+        public List<Answer> GetAnswersFromOpenQuestion(int questionNumber)
+        {
+            return (from Answer a in Answers
+                    where a.QuestionNumber == questionNumber && !string.IsNullOrEmpty(a.AnswerText)
+                    select new Answer
+                    {
+                        PollNumber = a.PollNumber,
+                        AnswerNumber = a.AnswerNumber,
+                        AnswerTitle = a.AnswerTitle,
+                        QuestionTitle = a.QuestionTitle,
+                        QuestionNumber = a.QuestionNumber,
+                        AnswerText = Regex.Replace(a.AnswerText, @"[!@#$%^-_><&*0-9]", String.Empty),
+                    }).ToList();
+        }
+        public object GetArgsValue(string parameter)
+        {
+            return Arguments.FirstOrDefault(x => x.Key == parameter).Value;
+        }
+
         public async Task GetResult1()
         {
             bool dismissAltAnswers = (bool)GetArgsValue("dismissAltAnswers");
@@ -33,13 +89,13 @@ namespace DataClustering.Models
             List<Answer> answersQ4;
             if (dismissAltAnswers)
             {
-                answersQ4 = (from Answer a in answers
+                answersQ4 = (from Answer a in Answers
                              where a.QuestionNumber == 4 && (a.AnswerTitle == "Sí" || a.AnswerTitle == "No")
                              select a).ToList();
             }
             else
             {
-                answersQ4 = (from Answer a in answers
+                answersQ4 = (from Answer a in Answers
                              where a.QuestionNumber == 4
                              select a).ToList();
             }
@@ -142,67 +198,6 @@ namespace DataClustering.Models
             {
 
             }
-        }
-        
-        private async Task FillAnswerList()
-        {
-            string query;
-            SqliteConnection conn = new($"Data Source={DbPath};");
-
-            await conn.OpenAsync();
-
-            List<Answer> answerList = new();
-
-            query =
-                "SELECT " +
-                    "r.num_encuesta, r.num_pregunta, p.titulo as tit_preg, " +
-                    "r.num_opcion as num_resp, o.titulo as tit_resp, r.respuesta as texto_resp\n" +
-                "FROM Respuesta r\n" +
-                "INNER JOIN Pregunta p ON r.num_pregunta = p.num_pregunta\n" +
-                "INNER JOIN Opcion o ON r.num_opcion = o.num_opcion AND r.num_pregunta = o.num_pregunta\n" +
-                "ORDER BY r.num_encuesta, r.num_pregunta, r.num_opcion";
-            using (var command = new SqliteCommand(query, conn))
-            {
-                var reader = command.ExecuteReader();
-
-                while (await reader.ReadAsync())
-                {
-                    Answer answer = new()
-                    {
-                        PollNumber = reader.GetInt32("num_encuesta"),
-                        AnswerNumber = reader.GetInt32("num_resp"),
-                        AnswerTitle = reader.GetString("tit_resp"),
-                        QuestionNumber = reader.GetInt32("num_pregunta"),
-                        QuestionTitle = reader.GetString("tit_preg"),
-                        AnswerText = reader.IsDBNull("texto_resp") ? null : reader.GetString("texto_resp"),
-                    };
-
-                    answerList.Add(answer);
-                }
-
-                await reader.CloseAsync();
-            }
-
-            Answers = answerList;
-        }
-        public List<Answer> GetAnswersFromOpenQuestion(int questionNumber)
-        {
-            return (from Answer a in Answers
-                    where a.QuestionNumber == questionNumber && !string.IsNullOrEmpty(a.AnswerText)
-                    select new Answer
-                    {
-                        PollNumber = a.PollNumber,
-                        AnswerNumber = a.AnswerNumber,
-                        AnswerTitle = a.AnswerTitle,
-                        QuestionTitle = a.QuestionTitle,
-                        QuestionNumber = a.QuestionNumber,
-                        AnswerText = Regex.Replace(a.AnswerText, @"[!@#$%^-_><&*0-9]", String.Empty),
-                    }).ToList();
-        }
-
-        public object GetArgsValue(string parameter)
-        {
-            return Arguments.FirstOrDefault(x => x.Key == parameter).Value;
         }
     }
 }

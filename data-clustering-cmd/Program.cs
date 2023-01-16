@@ -1,11 +1,8 @@
 ﻿using DataClustering.Models;
+using DataClustering.Utils;
 using Microsoft.Data.Sqlite;
 using System.Data;
-using System.Linq;
-using System.Collections.Generic;
-using DataClustering;
 using System.Text.RegularExpressions;
-using DataClustering.Utils;
 
 string dbPath = GetDbPath();
 var arguments = GetArguments();
@@ -18,22 +15,22 @@ GetResult3(answerList, arguments);
 #region Result Functions
 static async Task GetResult1(List<Answer> answers, Dictionary<string, object> args)
 {
-    bool dismissAltAnswers = (bool) GetArgsValue(args, "dismissAltAnswers");
+    bool dismissAltAnswers = (bool)GetArgsValue(args, "dismissAltAnswers");
 
     List<Answer> answersQ4;
-    if(dismissAltAnswers)
+    if (dismissAltAnswers)
     {
         answersQ4 = (from Answer a in answers
-                                where a.QuestionNumber == 4 && (a.AnswerTitle == "Sí" || a.AnswerTitle == "No")
-                                select a).ToList();
+                     where a.QuestionNumber == 4 && (a.AnswerTitle == "Sí" || a.AnswerTitle == "No")
+                     select a).ToList();
     }
     else
     {
         answersQ4 = (from Answer a in answers
-                                where a.QuestionNumber == 4
-                                select a).ToList();
+                     where a.QuestionNumber == 4
+                     select a).ToList();
     }
-    
+
     int totalAnswered = answersQ4.Count;
 
     var countYes = answersQ4.Where(x => x.AnswerTitle == "Sí").Count();
@@ -53,7 +50,7 @@ static async Task GetResult1(List<Answer> answers, Dictionary<string, object> ar
 static async Task GetResult2(List<Answer> answers, Dictionary<string, object> args)
 {
     var answersQ6 = GetAnswersFromOpenQuestion(answers, 6);
-    double percentage = (double) GetArgsValue(args, "percentage");
+    double percentage = (double)GetArgsValue(args, "percentage");
 
     Dictionary<Answer, int> answersApparitions = new();
     List<Answer> alreadyCounted = new();
@@ -95,7 +92,7 @@ static async Task GetResult3(List<Answer> answers, Dictionary<string, object> ar
 {
     List<Answer> answersQ7 = GetAnswersFromOpenQuestion(answers, 7);
 
-    double percentage = (double) GetArgsValue(args, "percentage");
+    double percentage = (double)GetArgsValue(args, "percentage");
 
     Dictionary<Answer, int> answersApparitions = new();
     List<Answer> alreadyCounted = new();
