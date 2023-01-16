@@ -5,6 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 using DataClustering;
 using System.Text.RegularExpressions;
+using DataClustering.Utils;
 
 string dbPath = GetDbPath();
 var arguments = GetArguments();

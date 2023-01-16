@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace DataClustering
+namespace DataClustering.Utils
 {
     /// <summary>
     /// This class implements string comparison algorithm
