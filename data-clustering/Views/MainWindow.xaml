@@ -20,7 +20,7 @@
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal">
+        <StackPanel Margin="10,0,0,0" Orientation="Horizontal">
             <Button
                 x:Name="BtnFindFile"
                 Grid.Row="0"
@@ -37,7 +37,10 @@
                 Content="/..." />
         </StackPanel>
 
-        <GroupBox Grid.Row="1" Header="Parámetros">
+        <GroupBox
+            Grid.Row="1"
+            Margin="10,0,0,0"
+            Header="Parámetros">
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Label Content="¿Desea desechar respuestas alternativas en las preguntas cerradas?" />
@@ -68,14 +71,30 @@
             </StackPanel>
         </GroupBox>
 
-        <ScrollViewer Grid.Row="2">
-            <StackPanel>
-                <lvc:PieChart
-                    x:Name="PieChart1"
-                    Width="300"
-                    Height="300"
-                    HorizontalAlignment="Center" />
-            </StackPanel>
+        <ScrollViewer Grid.Row="2" Padding="0">
+            <WrapPanel HorizontalAlignment="Left">
+                <GroupBox Margin="10" Header="¿Conocen los estudiantes el programa de EIU?">
+                    <lvc:PieChart
+                        x:Name="PieChart1"
+                        Width="400"
+                        Height="400"
+                        LegendLocation="Right" />
+                </GroupBox>
+                <GroupBox Margin="10" Header="¿Cuales son las cualidades que debe poseer un EIU?">
+                    <lvc:PieChart
+                        x:Name="PieChart2"
+                        Width="400"
+                        Height="400"
+                        LegendLocation="Right" />
+                </GroupBox>
+                <GroupBox Margin="10" Header="Los 15 estudiantes más cosiderados como EIU">
+                    <lvc:PieChart
+                        x:Name="PieChart3"
+                        Width="830"
+                        Height="400"
+                        LegendLocation="Right" />
+                </GroupBox>
+            </WrapPanel>
         </ScrollViewer>
 
         <StackPanel

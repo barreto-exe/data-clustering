@@ -1,11 +1,13 @@
 ﻿using DataClustering.Utils;
 using Microsoft.Data.Sqlite;
 using System;
+using LiveCharts;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DataClustering.Models
 {
@@ -82,7 +84,7 @@ namespace DataClustering.Models
             return Arguments.FirstOrDefault(x => x.Key == parameter).Value;
         }
 
-        public async Task GetResult1()
+        public async Task<Dictionary<string, int>> GetResult1()
         {
             bool dismissAltAnswers = (bool)GetArgsValue("dismissAltAnswers");
 
@@ -103,25 +105,33 @@ namespace DataClustering.Models
             int totalAnswered = answersQ4.Count;
 
             var countYes = answersQ4.Where(x => x.AnswerTitle == "Sí").Count();
-            double percentageYes = (double)countYes / (double)totalAnswered;
-
             var countNo = answersQ4.Where(x => x.AnswerTitle == "No").Count();
-            double percentageNo = (double)countNo / (double)totalAnswered;
+
+            Dictionary<string, int> result = new()
+            {
+                ["Sí"] = countYes,
+                ["No"] = countNo,
+            };
 
             //Counting times alt answers were given
-            double percentageAlt = 0;
             if (!dismissAltAnswers)
             {
-                var countAlt = answersQ4.Where(x => x.AnswerTitle != "Sí" && x.AnswerTitle != "No").Count();
-                percentageAlt = (double)countAlt / (double)totalAnswered;
+                int countAlt = 
+                    answersQ4
+                    .Where(x => x.AnswerTitle != "Sí" && x.AnswerTitle != "No")
+                    .Count();
+
+                result.Add("Otro", countAlt);
             }
+
+            return result;
         }
-        public async Task GetResult2(List<Answer> answers)
+        public async Task<Dictionary<string, int>> GetResult2()
         {
             var answersQ6 = GetAnswersFromOpenQuestion(6);
             double percentage = (double)GetArgsValue("percentage");
 
-            Dictionary<Answer, int> answersApparitions = new();
+            Dictionary<string, int> answersApparitions = new();
             List<Answer> alreadyCounted = new();
             try
             {
@@ -149,21 +159,23 @@ namespace DataClustering.Models
                     string first = answer.AnswerText[0].ToString().ToUpper();
                     answer.AnswerText = first + answer.AnswerText.Substring(1);
 
-                    answersApparitions.Add(answer, apparitions);
+                    answersApparitions.Add(answer.AnswerText, apparitions);
                 } while (alreadyCounted.Count < answersQ6.Count);
             }
             catch (Exception ex)
             {
 
             }
+
+            return answersApparitions;
         }
-        public async Task GetResult3(List<Answer> answers)
+        public async Task<Dictionary<string, int>> GetResult3()
         {
             List<Answer> answersQ7 = GetAnswersFromOpenQuestion(7);
 
             double percentage = (double)GetArgsValue("percentage");
 
-            Dictionary<Answer, int> answersApparitions = new();
+            Dictionary<string, int> answersApparitions = new();
             List<Answer> alreadyCounted = new();
             try
             {
@@ -191,13 +203,15 @@ namespace DataClustering.Models
                     string first = answer.AnswerText[0].ToString().ToUpper();
                     answer.AnswerText = first + answer.AnswerText.Substring(1);
 
-                    answersApparitions.Add(answer, apparitions);
+                    answersApparitions.Add(answer.AnswerText, apparitions);
                 } while (alreadyCounted.Count < answersQ7.Count);
             }
             catch (Exception ex)
             {
 
             }
+
+            return answersApparitions;
         }
     }
 }
