@@ -1,4 +1,4 @@
-﻿using data_filling.Models;
+﻿using DataFilling.Models;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using System;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace data_filling
+namespace DataFilling
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

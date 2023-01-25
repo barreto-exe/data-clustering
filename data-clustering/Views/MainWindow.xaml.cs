@@ -47,21 +47,36 @@ namespace DataClustering.Views
             await maker.FillAnswerList();
 
             var result1 = await maker.GetResult1();
-            FillChart(PieChart1, result1);
+            FillPieChart(PieChart1, result1);
             
             var result2 = await maker.GetResult2();
-            FillChart(PieChart2, result2);
+            FillPieChart(PieChart2, result2);
             
+            //TODO - make it a lines chart
             var result3 = await maker.GetResult3();
-            FillChart(PieChart3, result3);
+            FillRacingChart(CartesionChart1, result3);
         }
 
-        private void FillChart(PieChart pieChart, Dictionary<string, int> values)
+        private void FillPieChart(PieChart chart, Dictionary<string, int> values)
         {
-            pieChart.Series = new SeriesCollection();
+            chart.Series = new SeriesCollection();
             foreach (var item in values)
             {
-                pieChart.Series.Add(new PieSeries()
+                chart.Series.Add(new PieSeries()
+                {
+                    Values = new ChartValues<int> { item.Value },
+                    Title = item.Key,
+                    DataLabels = true,
+                });
+            }
+        }
+
+        private void FillRacingChart(CartesianChart chart, Dictionary<string, int> values)
+        {
+            chart.Series = new SeriesCollection();
+            foreach (var item in values)
+            {
+                chart.Series.Add(new RowSeries()
                 {
                     Values = new ChartValues<int> { item.Value },
                     Title = item.Key,

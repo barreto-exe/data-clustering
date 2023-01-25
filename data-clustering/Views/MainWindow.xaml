@@ -87,11 +87,14 @@
                         Height="400"
                         LegendLocation="Right" />
                 </GroupBox>
-                <GroupBox Margin="10" Header="Los 15 estudiantes más cosiderados como EIU">
-                    <lvc:PieChart
-                        x:Name="PieChart3"
-                        Width="830"
-                        Height="400"
+                <GroupBox
+                    Margin="10"
+                    Padding="10"
+                    Header="Los 15 estudiantes más cosiderados como EIU">
+                    <lvc:CartesianChart
+                        x:Name="CartesionChart1"
+                        Width="812"
+                        Height="420"
                         LegendLocation="Right" />
                 </GroupBox>
             </WrapPanel>
@@ -106,7 +109,6 @@
                 x:Name="BtnAnalizar"
                 Width="80"
                 Height="30"
-                Margin="0,0,10,0"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
                 Click="BtnAnalizar_Click"

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 
 namespace DataClustering.Models
 {
@@ -167,7 +168,14 @@ namespace DataClustering.Models
 
             }
 
-            return answersApparitions;
+            //Take the first 10 most appearing
+            var result = answersApparitions.OrderByDescending(x => x.Value).Take(10).ToDictionary(x => x.Key, x => x.Value);
+
+            //Add and "others" section
+            var otros = answersApparitions.OrderBy(x => x.Value).Take(answersApparitions.Count - 10);
+            result.Add("Otros", otros.Sum(x => x.Value));
+
+            return result;
         }
         public async Task<Dictionary<string, int>> GetResult3()
         {
@@ -211,7 +219,20 @@ namespace DataClustering.Models
 
             }
 
-            return answersApparitions;
+            var textInfo = CultureInfo.CurrentCulture.TextInfo;
+
+            //Take the first 15 most appearing
+            int i = 1;
+            var result = answersApparitions
+                .OrderByDescending(x => x.Value)
+                .Take(15)
+                .ToDictionary(x => $"{i++}° - {textInfo.ToTitleCase(x.Key)}", x => x.Value);
+
+            ////Add and "others" section
+            //var otros = answersApparitions.OrderBy(x => x.Value).Take(answersApparitions.Count - 15);
+            //result.Add("Otros", otros.Sum(x => x.Value));
+
+            return result;
         }
     }
 }

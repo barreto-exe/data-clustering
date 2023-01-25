@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace data_filling
+namespace DataFilling
 {
     /// <summary>
     /// Interaction logic for App.xaml
